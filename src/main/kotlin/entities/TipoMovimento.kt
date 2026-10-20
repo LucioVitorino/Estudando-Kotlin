@@ -1,8 +1,8 @@
 package entities
 
-enum class TipoMovimento(val simbolo: Char) {
-    RECEITA('r'),
-    DESPESA('d');
+enum class TipoMovimento(val simbolo: Char, val sinal: Int) {
+    RECEITA('r', 1),
+    DESPESA('d', -1);
     companion object {
         private val porSimbolo: Map<Char, TipoMovimento> = entries.associateBy { it.simbolo };
 

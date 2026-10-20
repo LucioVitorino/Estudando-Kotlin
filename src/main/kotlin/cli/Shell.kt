@@ -4,6 +4,7 @@ import service.AuthService
 import service.Autenticacao
 
 class Shell(private val auth: AuthService) {
+    private val separador = Regex("\\s+")
     private var atual: Autenticacao? = null
     private var comandos: Comandos = anonimos()
 
@@ -18,20 +19,19 @@ class Shell(private val auth: AuthService) {
     }
 
     private fun processar(linha: String) {
-        val chave = linha.substringBefore(" ")
+        val partes = linha.split(separador)   // cada argumento é uma palavra, sem espaços
+        val chave = partes.first()
+        val args = partes.drop(1)
+
         val comando = comandos[chave]
         if (comando == null) {
             println("Comando desconhecido : $chave")
             return
         }
-
-        val resto = linha.substringAfter(" ", "")
-        val args = if (resto.isBlank()) emptyList() else resto.split(" ", limit = comando.nArgs)
         if (args.size != comando.nArgs) {
             println("'$chave' espera ${comando.nArgs} argumento(s), recebeu ${args.size}.")
             return
         }
-
         try {
             comando.executar(args)
         } catch (e: IllegalArgumentException) {
